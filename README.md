@@ -43,24 +43,30 @@ git clone https://github.com/ketlymachado/qtsw-task-manager
 cd qtsw-task-manager
 ```
 
-### 2. Configure o backend
+### 2. Crie as variáveis de ambiente
+
+```bash
+cp .env.example .env
+```
+
+### 3. Inicialize o banco e gere o cliente Prisma:
+
+```bash
+npx prisma generate
+npx prisma migrate dev --name init
+```
+
+### 4. Configure o backend
 
 ```bash
 cd server
 npm install
 ```
 
-### 3. Inicialize o banco e gere o cliente Prisma:
-
-```bash
-npx prisma migrate dev --name init
-npx prisma generate
-```
-
 ### 4. Configure o frontend
 
 ```bash
-cd client
+cd ../client
 npm install
 ```
 
