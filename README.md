@@ -73,5 +73,6 @@ npm install
 ### 5. Rode a aplicação
 
 ```bash
+cd ..
 npm run dev
 ```
