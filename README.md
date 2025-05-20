@@ -76,3 +76,6 @@ npm install
 cd ..
 npm run dev
 ```
+
+![image](https://github.com/user-attachments/assets/89d266cc-7aa0-442d-8649-a906339075d4)
+
