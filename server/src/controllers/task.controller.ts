@@ -1,113 +1,97 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { prisma } from '../utils/prisma';
+import { TaskService } from '../services/tark.service';
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
-    const { title, description, dueDate, priority } = req.body;
     const userId = req.userId;
-
     if (!userId) {
         res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Não autorizado' });
 
         return;
     }
 
-    const task = await prisma.task.create({
-        data: {
-            title,
-            description,
-            dueDate: dueDate ? new Date(dueDate) : null,
-            priority,
-            userId,
-        },
-    });
-
-    res.status(StatusCodes.CREATED).json(task);
+    try {
+        const task = await TaskService.createTask(userId, req.body);
+        res.status(StatusCodes.CREATED).json(task);
+    } catch (error) {
+        console.error('Erro ao criar tarefa:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+    }
 };
 
 export const getTasks = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
-    const { completed, priority } = req.query;
-
     if (!userId) {
         res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Não autorizado' });
 
         return;
     }
 
-    const tasks = await prisma.task.findMany({
-        where: {
-            userId,
-            ...(completed !== undefined && { completed: completed === 'true' }),
-            ...(priority && { priority: priority as string }),
-        },
-        orderBy: { createdAt: 'desc' },
-    });
-
-    res.json(tasks);
+    try {
+        const tasks = await TaskService.getTasks(userId, req.query);
+        res.json(tasks);
+    } catch (error) {
+        console.error('Erro ao buscar tarefas:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+    }
 };
 
 export const getTaskById = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
     const userId = req.userId;
-
     if (!userId) {
         res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Não autorizado' });
 
         return;
     }
 
-    const task = await prisma.task.findUnique({
-        where: { id: parseInt(id), userId },
-    });
-
-    if (!task) {
-        res.status(StatusCodes.NOT_FOUND).json({ message: 'Tarefa não encontrada' });
-
-        return;
+    try {
+        const task = await TaskService.getTaskById(userId, parseInt(req.params.id));
+        res.json(task);
+    } catch (error) {
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Tarefa não encontrada'
+        ) {
+            res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+        } else {
+            console.error('Erro ao buscar tarefa:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
-
-    res.json(task);
 };
 
 export const updateTask = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
     const userId = req.userId;
-    const { title, description, completed, dueDate, priority } = req.body;
-
     if (!userId) {
         res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Não autorizado' });
 
         return;
     }
 
-    const task = await prisma.task.update({
-        where: { id: parseInt(id), userId },
-        data: {
-            title,
-            description,
-            completed,
-            dueDate: dueDate ? new Date(dueDate) : null,
-            priority,
-        },
-    });
-
-    res.json(task);
+    try {
+        const updatedTask = await TaskService.updateTask(userId, parseInt(req.params.id), req.body);
+        res.json(updatedTask);
+    } catch (error) {
+        console.error('Erro ao atualizar tarefa:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+    }
 };
 
 export const deleteTask = async (req: Request, res: Response): Promise<void> => {
-    const { id } = req.params;
     const userId = req.userId;
-
     if (!userId) {
         res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Não autorizado' });
 
         return;
     }
 
-    await prisma.task.delete({
-        where: { id: parseInt(id), userId },
-    });
-
-    res.status(StatusCodes.NO_CONTENT).send();
+    try {
+        await TaskService.deleteTask(userId, parseInt(req.params.id));
+        res.status(StatusCodes.NO_CONTENT).send();
+    } catch (error) {
+        console.error('Erro ao deletar tarefa:', error);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+    }
 };

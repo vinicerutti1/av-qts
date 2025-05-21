@@ -1,61 +1,44 @@
-import bcrypt from 'bcryptjs';
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import jwt from 'jsonwebtoken';
-import { JWT_SECRET } from '../config';
-import { prisma } from '../utils/prisma';
-
-const TOKEN_EXPIRATION = '1h';
+import { AuthService } from '../services/auth.service';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
     const { email, password, name } = req.body;
     try {
-        const existingUser = await prisma.user.findUnique({ where: { email } });
-        if (existingUser) {
-            res.status(StatusCodes.BAD_REQUEST).json({ message: 'Usuário já cadastrado' });
-
-            return;
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const user = await prisma.user.create({
-            data: { email, password: hashedPassword, name },
-        });
-
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
-
-        res.status(StatusCodes.CREATED).json({
-            token,
-            user: { id: user.id, email: user.email, name: user.name },
-        });
+        const result = await AuthService.registerUser(email, password, name);
+        res.status(StatusCodes.CREATED).json(result);
     } catch (error) {
-        console.error('Erro no registro:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Usuário já cadastrado'
+        ) {
+            res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
+        } else {
+            console.error('Erro no registro:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
 };
 
 export const login = async (req: Request, res: Response): Promise<void> => {
     const { email, password } = req.body;
     try {
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) {
-            res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Credenciais inválidas' });
-
-            return;
-        }
-
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) {
-            res.status(StatusCodes.UNAUTHORIZED).json({ message: 'Credenciais inválidas' });
-
-            return;
-        }
-
-        const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
-        res.json({ token, user: { id: user.id, email: user.email, name: user.name } });
+        const result = await AuthService.loginUser(email, password);
+        res.json(result);
     } catch (error) {
-        console.error('Erro no login:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Credenciais inválidas'
+        ) {
+            res.status(StatusCodes.UNAUTHORIZED).json({ message: error.message });
+        } else {
+            console.error('Erro no login:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
 };
 
@@ -68,21 +51,20 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
     }
 
     try {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { id: true, email: true, name: true, createdAt: true },
-        });
-
-        if (!user) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'Usuário não encontrado' });
-
-            return;
-        }
-
+        const user = await AuthService.getUserById(userId);
         res.json(user);
     } catch (error) {
-        console.error('Erro ao buscar usuário:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Usuário não encontrado'
+        ) {
+            res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+        } else {
+            console.error('Erro ao buscar usuário:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
 };
 
@@ -95,21 +77,20 @@ export const validateToken = async (req: Request, res: Response): Promise<void> 
     }
 
     try {
-        const user = await prisma.user.findUnique({
-            where: { id: userId },
-            select: { id: true, email: true, name: true },
-        });
-
-        if (!user) {
-            res.status(StatusCodes.NOT_FOUND).json({ message: 'Usuário não encontrado' });
-
-            return;
-        }
-
+        const user = await AuthService.validateUserToken(userId);
         res.json({ user });
     } catch (error) {
-        console.error('Erro ao validar token:', error);
-        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Usuário não encontrado'
+        ) {
+            res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
+        } else {
+            console.error('Erro ao validar token:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
 };
 
@@ -124,16 +105,19 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
     }
 
     try {
-        const decoded = jwt.verify(oldToken, JWT_SECRET, { ignoreExpiration: true }) as {
-            userId: number;
-        };
-        const newToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-            expiresIn: TOKEN_EXPIRATION,
-        });
-
+        const newToken = AuthService.refreshToken(oldToken);
         res.json({ token: newToken });
     } catch (error) {
-        console.error('Erro ao renovar token:', error);
-        res.status(StatusCodes.FORBIDDEN).json({ message: 'Token inválido' });
+        if (
+            error &&
+            typeof error == 'object' &&
+            'message' in error &&
+            error.message === 'Token inválido'
+        ) {
+            res.status(StatusCodes.FORBIDDEN).json({ message: error.message });
+        } else {
+            console.error('Erro ao renovar token:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ message: 'Erro no servidor' });
+        }
     }
 };
