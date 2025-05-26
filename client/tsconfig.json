@@ -6,12 +6,6 @@
         "esModuleInterop": true,
         "strict": true,
         "jsx": "react-jsx",
-        "baseUrl": "./src",
-        "paths": {
-            "@/*": ["./*"],
-            "@context/*": ["context/*"],
-            "@api/*": ["api/*"]
-        },
         "types": ["vite/client"],
         "allowJs": true,
         "skipLibCheck": true,

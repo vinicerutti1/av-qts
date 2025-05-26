@@ -11,24 +11,6 @@ import tsEslint from 'typescript-eslint';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const resolverConfig = {
-    'import/resolver': {
-        typescript: {
-            project: [
-                path.join(__dirname, 'tsconfig.json'),
-                path.join(__dirname, 'client/tsconfig.json'),
-                path.join(__dirname, 'server/tsconfig.json'),
-            ],
-            alwaysTryTypes: true,
-            tsconfigRootDir: __dirname,
-        },
-        node: {
-            extensions: ['.js', '.jsx', '.ts', '.tsx', '.mts', '.cts', '.mjs', '.cjs'],
-            paths: [path.join(__dirname, 'node_modules')],
-        },
-    },
-};
-
 export default tsEslint.config(
     {
         ignores: ['**/dist/**', '**/node_modules/**'],
@@ -47,7 +29,12 @@ export default tsEslint.config(
             react: {
                 version: 'detect',
             },
-            ...resolverConfig.settings,
+            'import/resolver': {
+                node: {
+                    extensions: ['.js', '.jsx', '.ts', '.tsx', '.mts', '.cts', '.mjs', '.cjs'],
+                    paths: [path.join(__dirname, 'node_modules')],
+                },
+            },
         },
         plugins: {
             import: importPlugin,
@@ -86,10 +73,6 @@ export default tsEslint.config(
                         'type',
                     ],
                     pathGroups: [
-                        {
-                            pattern: '@/**',
-                            group: 'internal',
-                        },
                         {
                             pattern: './**/*.css',
                             group: 'object',
