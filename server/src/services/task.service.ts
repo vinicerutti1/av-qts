@@ -1,3 +1,5 @@
+import { InvalidTaskNameError } from '../errors/InvalidTaskNameError';
+import { TaskNotFoundError } from '../errors/TaskNotFoundError';
 import { prisma } from '../utils/prisma';
 
 export class TaskService {
@@ -10,6 +12,10 @@ export class TaskService {
             priority?: string;
         },
     ) {
+        if (/^\d/.test(data.title)) {
+            throw new InvalidTaskNameError();
+        }
+
         const task = await prisma.task.create({
             data: {
                 title: data.title,
@@ -44,7 +50,7 @@ export class TaskService {
         });
 
         if (!task) {
-            throw new Error('Tarefa não encontrada');
+            throw new TaskNotFoundError();
         }
 
         return task;
