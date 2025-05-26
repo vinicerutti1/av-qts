@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { InvalidCredentialsError } from '../errors/auth/InvalidCredentialsError';
+import { InvalidTokenError } from '../errors/auth/InvalidTokenError';
+import { UserAlreadyRegisteredError } from '../errors/auth/UserAlreadyRegisteredError';
+import { UserNotFoundError } from '../errors/auth/UserNotFoundError';
 import { AuthService } from '../services/auth.service';
 
 export const register = async (req: Request, res: Response): Promise<void> => {
@@ -8,12 +12,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
         const result = await AuthService.registerUser(email, password, name);
         res.status(StatusCodes.CREATED).json(result);
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Usuário já cadastrado'
-        ) {
+        if (error instanceof UserAlreadyRegisteredError) {
             res.status(StatusCodes.BAD_REQUEST).json({ message: error.message });
         } else {
             console.error('Erro no registro:', error);
@@ -28,12 +27,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
         const result = await AuthService.loginUser(email, password);
         res.json(result);
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Credenciais inválidas'
-        ) {
+        if (error instanceof InvalidCredentialsError) {
             res.status(StatusCodes.UNAUTHORIZED).json({ message: error.message });
         } else {
             console.error('Erro no login:', error);
@@ -54,12 +48,7 @@ export const getCurrentUser = async (req: Request, res: Response): Promise<void>
         const user = await AuthService.getUserById(userId);
         res.json(user);
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Usuário não encontrado'
-        ) {
+        if (error instanceof UserNotFoundError) {
             res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
         } else {
             console.error('Erro ao buscar usuário:', error);
@@ -80,12 +69,7 @@ export const validateToken = async (req: Request, res: Response): Promise<void> 
         const user = await AuthService.validateUserToken(userId);
         res.json({ user });
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Usuário não encontrado'
-        ) {
+        if (error instanceof UserNotFoundError) {
             res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
         } else {
             console.error('Erro ao validar token:', error);
@@ -108,12 +92,7 @@ export const refreshToken = async (req: Request, res: Response): Promise<void> =
         const newToken = AuthService.refreshToken(oldToken);
         res.json({ token: newToken });
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Token inválido'
-        ) {
+        if (error instanceof InvalidTokenError) {
             res.status(StatusCodes.FORBIDDEN).json({ message: error.message });
         } else {
             console.error('Erro ao renovar token:', error);

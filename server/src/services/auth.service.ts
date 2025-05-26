@@ -1,6 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { JWT_SECRET } from '../config';
+import { InvalidCredentialsError } from '../errors/auth/InvalidCredentialsError';
+import { InvalidTokenError } from '../errors/auth/InvalidTokenError';
+import { UserAlreadyRegisteredError } from '../errors/auth/UserAlreadyRegisteredError';
+import { UserNotFoundError } from '../errors/auth/UserNotFoundError';
 import { prisma } from '../utils/prisma';
 
 const TOKEN_EXPIRATION = '1h';
@@ -9,7 +13,7 @@ export class AuthService {
     static async registerUser(email: string, password: string, name: string) {
         const existingUser = await prisma.user.findUnique({ where: { email } });
         if (existingUser) {
-            throw new Error('Usuário já cadastrado');
+            throw new UserAlreadyRegisteredError();
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -28,12 +32,12 @@ export class AuthService {
     static async loginUser(email: string, password: string) {
         const user = await prisma.user.findUnique({ where: { email } });
         if (!user) {
-            throw new Error('Credenciais inválidas');
+            throw new InvalidCredentialsError();
         }
 
         const isPasswordValid = await bcrypt.compare(password, user.password);
         if (!isPasswordValid) {
-            throw new Error('Credenciais inválidas');
+            throw new InvalidCredentialsError();
         }
 
         const token = jwt.sign({ userId: user.id }, JWT_SECRET, { expiresIn: TOKEN_EXPIRATION });
@@ -51,7 +55,7 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new Error('Usuário não encontrado');
+            throw new UserNotFoundError();
         }
 
         return user;
@@ -64,7 +68,7 @@ export class AuthService {
         });
 
         if (!user) {
-            throw new Error('Usuário não encontrado');
+            throw new UserNotFoundError();
         }
 
         return user;
@@ -81,7 +85,7 @@ export class AuthService {
 
             return newToken;
         } catch {
-            throw new Error('Token inválido');
+            throw new InvalidTokenError();
         }
     }
 }

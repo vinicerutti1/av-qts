@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
+import { TaskNotFoundError } from '../errors/task/TaskNotFoundError';
 import { TaskService } from '../services/task.service';
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
@@ -48,12 +49,7 @@ export const getTaskById = async (req: Request, res: Response): Promise<void> =>
         const task = await TaskService.getTaskById(userId, parseInt(req.params.id));
         res.json(task);
     } catch (error) {
-        if (
-            error &&
-            typeof error == 'object' &&
-            'message' in error &&
-            error.message === 'Tarefa não encontrada'
-        ) {
+        if (error instanceof TaskNotFoundError) {
             res.status(StatusCodes.NOT_FOUND).json({ message: error.message });
         } else {
             console.error('Erro ao buscar tarefa:', error);
