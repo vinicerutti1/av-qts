@@ -1,5 +1,5 @@
-import { InvalidTaskNameError } from '../../errors/InvalidTaskNameError';
-import { TaskNotFoundError } from '../../errors/TaskNotFoundError';
+import { InvalidTaskNameError } from '../../errors/task/InvalidTaskNameError';
+import { TaskNotFoundError } from '../../errors/task/TaskNotFoundError';
 import { TaskService } from '../../services/task.service';
 import { prisma } from '../../utils/prisma';
 
