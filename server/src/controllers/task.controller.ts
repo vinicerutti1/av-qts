@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
-import { TaskService } from '../services/tark.service';
+import { TaskService } from '../services/task.service';
 
 export const createTask = async (req: Request, res: Response): Promise<void> => {
     const userId = req.userId;
