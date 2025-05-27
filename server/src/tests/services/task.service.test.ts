@@ -113,7 +113,7 @@ describe('TaskService', () => {
 
         it('deve aceitar data de vencimento nula', async () => {
             // Arrange (preparar)
-            const dadosEntrada = { title: 'Tarefa sem data', dueDate: null };
+            const dadosEntrada = { title: 'Tarefa sem data de vencimento', dueDate: null };
             const tarefaEsperada = { id: 2, ...dadosEntrada, userId };
 
             (prisma.task.create as jest.Mock).mockResolvedValue(tarefaEsperada);
