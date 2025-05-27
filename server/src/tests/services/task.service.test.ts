@@ -24,7 +24,7 @@ describe('TaskService', () => {
         { id: 4, title: 'Tarefa 4', userId, completed: true, priority: 'high' },
     ];
 
-    beforeEach(() => {
+    afterEach(() => {
         jest.clearAllMocks();
     });
 
