@@ -209,7 +209,7 @@ describe('TaskService', () => {
             expect(resultado).toEqual(tarefasMock[0]);
         });
 
-        it('deve lançar erro se a tarefa não existir', async () => {
+        it('deve lançar erro ao buscar tarefa pelo identificador se a tarefa não existir', async () => {
             // Arrange (preparar)
             (prisma.task.findUnique as jest.Mock).mockResolvedValue(null);
 
