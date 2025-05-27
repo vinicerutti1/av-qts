@@ -87,6 +87,7 @@ export default tsEslint.config(
             ],
             'import/newline-after-import': 'error',
             'object-shorthand': ['error', 'always'],
+            'spaced-comment': ['error', 'always', { markers: ['/'] }],
         },
     },
 );
