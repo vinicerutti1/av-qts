@@ -61,7 +61,7 @@ export class AuthService {
         return user;
     }
 
-    static async validateUserToken(userId: number) {
+    static async getUserFromTokenPayload(userId: number) {
         const user = await prisma.user.findUnique({
             where: { id: userId },
             select: { id: true, email: true, name: true },

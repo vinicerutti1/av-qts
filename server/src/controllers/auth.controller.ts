@@ -66,7 +66,7 @@ export const validateToken = async (req: Request, res: Response): Promise<void> 
     }
 
     try {
-        const user = await AuthService.validateUserToken(userId);
+        const user = await AuthService.getUserFromTokenPayload(userId);
         res.json({ user });
     } catch (error) {
         if (error instanceof UserNotFoundError) {
