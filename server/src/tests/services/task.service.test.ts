@@ -124,6 +124,30 @@ describe('TaskService', () => {
             // Assert (verificar)
             expect(resultado.dueDate).toBeNull();
         });
+
+        it('deve lançar erro ao criar tarefa com título contendo somente espaços', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao criar tarefa com data de vencimento inválida', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao criar tarefa com prioridade inválida', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao criar tarefa com data de vencimento no passado', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao criar tarefa com data de vencimento no formato inválido', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao criar tarefa se o título conter somente caracteres especiais', async () => {
+            // implementar
+        });
     });
 
     describe('getTasks', () => {
@@ -163,6 +187,14 @@ describe('TaskService', () => {
 
             expect(resultado).toEqual(tarefasMock);
         });
+
+        it('deve lançar erro ao filtrar tarefas por prioridade inválida', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao filtrar por status de conclusão inválido', async () => {
+            // implementar
+        });
     });
 
     describe('getTaskById', () => {
@@ -186,6 +218,10 @@ describe('TaskService', () => {
 
             // Assert (verificar)
             await expect(promise).rejects.toBeInstanceOf(TaskNotFoundError);
+        });
+
+        it('deve lançar erro ao buscar tarefa de outro usuário', async () => {
+            // implementar
         });
     });
 
@@ -232,6 +268,38 @@ describe('TaskService', () => {
             // Assert (verificar)
             expect(resultado).toEqual(tarefaAtualizada);
         });
+
+        it('deve lançar erro ao atualizar tarefa se o título começar com número', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa com título contendo somente espaços', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa com data de vencimento inválida', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa com prioridade inválida', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa com data de vencimento no passado', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa com data de vencimento no formato inválido', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar tarefa se o título conter somente caracteres especiais', async () => {
+            // implementar
+        });
+
+        it('deve lançar erro ao atualizar uma tarefa inexistente', async () => {
+            // implementar
+        });
     });
 
     describe('deleteTask', () => {
@@ -246,6 +314,10 @@ describe('TaskService', () => {
             expect(prisma.task.delete).toHaveBeenCalledWith({
                 where: { id: 1, userId },
             });
+        });
+
+        it('deve lançar erro ao deletar tarefa de outro usuário', async () => {
+            // implementar
         });
     });
 });
