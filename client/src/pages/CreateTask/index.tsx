@@ -52,7 +52,7 @@ export const CreateTask = () => {
 
                 {error && <p className="mb-4 text-red-400 text-sm text-center">{error}</p>}
 
-                <form onSubmit={handleSubmit} className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5" data-testid="task-form">
                     <div>
                         <label htmlFor="title" className="block text-sm font-medium mb-1">
                             Título
