@@ -64,7 +64,7 @@ describe('TaskService', () => {
             expect(tarefa).toEqual(tarefaCriadaMock);
         });
 
-        it('deve retornar erro se o título da tarefa começar com número', async () => {
+        it('deve lançar erro se o título da tarefa começar com número', async () => {
             // Arrange (preparar)
             const dadosInvalidos = {
                 title: '1 Tarefa inválida',
