@@ -29,6 +29,7 @@ describe('AuthService', () => {
 
     describe('registerUser', () => {
         it('deve cadastrar um novo usuário e retornar o seu token', async () => {
+            // Arrange (preparar)
             const hashedPassword = 'senha-criptografada';
             (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
             (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
@@ -38,12 +39,14 @@ describe('AuthService', () => {
             });
             (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
 
+            // Act (agir)
             const result = await AuthService.registerUser(
                 mockUser.email,
                 mockUser.password,
                 mockUser.name,
             );
 
+            // Assert (verificar)
             expect(prisma.user.findUnique).toHaveBeenCalledWith({
                 where: { email: mockUser.email },
             });
@@ -69,12 +72,15 @@ describe('AuthService', () => {
 
     describe('loginUser', () => {
         it('deve realizar o login do usuário e retornar o seu token', async () => {
+            // Arrange (preparar)
             (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
             (bcrypt.compare as jest.Mock).mockResolvedValue(true);
             (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
 
+            // Act (agir)
             const result = await AuthService.loginUser(mockUser.email, mockUser.password);
 
+            // Assert (verificar)
             expect(result.token).toBe('mockedToken');
             expect(result.user).toEqual({
                 id: mockUser.id,
@@ -94,10 +100,13 @@ describe('AuthService', () => {
 
     describe('getUserById', () => {
         it('deve retornar o usuário com base no seu identificador', async () => {
+            // Arrange (preparar)
             (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
+            // Act (agir)
             const user = await AuthService.getUserById(1);
 
+            // Assert (verificar)
             expect(prisma.user.findUnique).toHaveBeenCalledWith({
                 where: { id: mockUser.id },
             });
@@ -116,10 +125,13 @@ describe('AuthService', () => {
 
     describe('getUserFromTokenPayload', () => {
         it('deve retornar dados do usuário com base no identificador retornado pelo token', async () => {
+            // Arrange (preparar)
             (prisma.user.findUnique as jest.Mock).mockResolvedValue(mockUser);
 
+            // Act (agir)
             const user = await AuthService.getUserFromTokenPayload(1);
 
+            // Assert (verificar)
             expect(user).toEqual({
                 id: mockUser.id,
                 email: mockUser.email,
@@ -134,11 +146,14 @@ describe('AuthService', () => {
 
     describe('refreshToken', () => {
         it('deve retornar um token novo ao atualizar token se o token antigo for válido', () => {
+            // Arrange (preparar)
             (jwt.verify as jest.Mock).mockReturnValue({ userId: 1 });
             (jwt.sign as jest.Mock).mockReturnValue('tokenNovo');
 
+            // Act (agir)
             const newToken = AuthService.refreshToken('tokenAntigo');
 
+            // Assert (verificar)
             expect(newToken).toBe('tokenNovo');
         });
 
