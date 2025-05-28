@@ -19,9 +19,10 @@ describe('AuthService', () => {
         id: 1,
         email: 'usuario@exemplo.teste',
         name: 'Usuário Exemplo',
-        password: 'senha',
         createdAt: new Date(),
     };
+    const password = 'senha';
+    const hashedPassword = 'senha-criptografada';
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -30,7 +31,6 @@ describe('AuthService', () => {
     describe('registerUser', () => {
         it('deve cadastrar um novo usuário e retornar o seu token', async () => {
             // Arrange (preparar)
-            const hashedPassword = 'senha-criptografada';
             (prisma.user.findUnique as jest.Mock).mockResolvedValue(null);
             (bcrypt.hash as jest.Mock).mockResolvedValue(hashedPassword);
             (prisma.user.create as jest.Mock).mockResolvedValue({
@@ -40,11 +40,7 @@ describe('AuthService', () => {
             (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
 
             // Act (agir)
-            const result = await AuthService.registerUser(
-                mockUser.email,
-                mockUser.password,
-                mockUser.name,
-            );
+            const result = await AuthService.registerUser(mockUser.email, password, mockUser.name);
 
             // Assert (verificar)
             expect(prisma.user.findUnique).toHaveBeenCalledWith({
@@ -78,7 +74,7 @@ describe('AuthService', () => {
             (jwt.sign as jest.Mock).mockReturnValue('mockedToken');
 
             // Act (agir)
-            const result = await AuthService.loginUser(mockUser.email, mockUser.password);
+            const result = await AuthService.loginUser(mockUser.email, password);
 
             // Assert (verificar)
             expect(result.token).toBe('mockedToken');
@@ -109,6 +105,7 @@ describe('AuthService', () => {
             // Assert (verificar)
             expect(prisma.user.findUnique).toHaveBeenCalledWith({
                 where: { id: mockUser.id },
+                select: { id: true, email: true, name: true, createdAt: true },
             });
             expect(user).toEqual({
                 id: mockUser.id,
@@ -136,6 +133,7 @@ describe('AuthService', () => {
                 id: mockUser.id,
                 email: mockUser.email,
                 name: mockUser.name,
+                createdAt: mockUser.createdAt,
             });
         });
 
