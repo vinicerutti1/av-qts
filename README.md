@@ -40,48 +40,83 @@ O backend é implementado em **TypeScript** com **Prisma** e **SQLite** para ban
 
 ```bash
 git clone https://github.com/ketlymachado/qtsw-task-manager
+```
+
+### 2. Acesse o repositório
+
+```bash
 cd qtsw-task-manager
+```
+
+### 3. Instale as dependências
+
+```bash
 npm install
 ```
 
-### 2. Crie as variáveis de ambiente
+### 4. Crie as variáveis de ambiente
 
 ```bash
 cp .env.example .env
 ```
 
-### 3. Inicialize o banco e gere o cliente Prisma:
+### 5. Inicialize o banco e gere o cliente Prisma:
 
 ```bash
-npx prisma:generate
-npx prisma:migrate
+npm run prisma:generate
 ```
 
-### 4. Configure o backend
+### 6. Rode as migrações:
+
+```bash
+npm run prisma:migrate
+```
+
+### 7. Acesse o diretório do backend
 
 ```bash
 cd server
+```
+
+### 8. Crie as variáveis de ambiente
+
+```bash
 cp .env.example .env
+```
+
+### 9. Instale as dependências
+
+```bash
 npm install
 ```
 
-### 4. Configure o frontend
+### 10. Acesse o diretório do frontend
 
 ```bash
 cd ../client
+```
+
+### 11. Instale as dependências
+
+```bash
 npm install
 ```
 
-### 5. Rode a aplicação
+### 12. Acesse o diretório principal
 
 ```bash
 cd ..
+```
+
+### 13. Rode a aplicação
+
+```bash
 npm run dev
 ```
 
 ![image](https://github.com/user-attachments/assets/89d266cc-7aa0-442d-8649-a906339075d4)
 
-### 6. Rode os testes [OPCIONAL]
+### 14. Rode os testes [OPCIONAL]
 
 #### Testes de unidade (back-end)
 
