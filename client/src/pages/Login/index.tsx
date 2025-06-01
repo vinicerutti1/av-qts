@@ -30,7 +30,9 @@ export const Login = () => {
             <div className="w-full max-w-md bg-slate-950 text-white p-8 rounded-2xl shadow-lg">
                 <h2 className="text-3xl font-bold text-center mb-6">Entrar</h2>
 
-                {error && <p className="mb-4 text-red-400 text-sm text-center">{error}</p>}
+                {error && (
+                    <p className="error-message mb-4 text-red-400 text-sm text-center">{error}</p>
+                )}
 
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div>

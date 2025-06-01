@@ -1,7 +1,6 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
 
-// 🟢 Load dotenv BEFORE anything else
 dotenv.config({
     path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env',
 });
