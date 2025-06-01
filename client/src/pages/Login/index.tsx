@@ -36,6 +36,7 @@ export const Login = () => {
                     <div>
                         <label className="block text-sm font-medium mb-1">E-mail</label>
                         <input
+                            name="email"
                             placeholder="Digite o e-mail"
                             type="email"
                             value={email}
@@ -48,6 +49,7 @@ export const Login = () => {
                     <div>
                         <label className="block text-sm font-medium mb-1">Senha</label>
                         <input
+                            name="password"
                             placeholder="Digite a senha"
                             type="password"
                             value={password}
