@@ -1,3 +1,4 @@
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import app from '../../app';
 import { prisma } from '../../utils/prisma';
@@ -25,7 +26,7 @@ describe('AuthController', () => {
             const response = await request(app).post('/api/auth/register').send(userData);
 
             // Assert (verificar)
-            expect(response.status).toBe(201);
+            expect(response.status).toBe(StatusCodes.CREATED);
             expect(response.body).toMatchObject({
                 user: {
                     id: expect.any(Number),

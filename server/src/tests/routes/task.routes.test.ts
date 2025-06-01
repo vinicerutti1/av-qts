@@ -8,6 +8,7 @@ jest.mock('../../middlewares/auth.middleware', () => ({
     },
 }));
 
+import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import app from '../../app';
 import { prisma } from '../../utils/prisma';
@@ -36,7 +37,7 @@ describe('TaskController', () => {
             const response = await request(app).post('/api/tasks').send(taskData);
 
             // Assert (verificar)
-            expect(response.statusCode).toBe(201);
+            expect(response.statusCode).toBe(StatusCodes.CREATED);
             expect(response.body).toEqual({
                 ...taskData,
                 id: expect.any(Number),
