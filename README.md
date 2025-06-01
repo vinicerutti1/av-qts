@@ -53,8 +53,8 @@ cp .env.example .env
 ### 3. Inicialize o banco e gere o cliente Prisma:
 
 ```bash
-npx prisma:generate
-npx prisma:migrate
+npm run prisma:generate
+npm run prisma:migrate
 ```
 
 ### 4. Configure o backend
