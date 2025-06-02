@@ -34,7 +34,7 @@ export const Login = () => {
                     <p className="error-message mb-4 text-red-400 text-sm text-center">{error}</p>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
                     <div>
                         <label className="block text-sm font-medium mb-1">E-mail</label>
                         <input

@@ -16,5 +16,8 @@ export default defineConfig({
             return config;
         },
         baseUrl: 'http://localhost:5173',
+        env: {
+            apiUrl: 'http://localhost:5000/api',
+        },
     },
 });
