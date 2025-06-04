@@ -3,7 +3,7 @@
 // Mock do middleware de autenticação para simular a autenticação durante o teste
 jest.mock('../../middlewares/auth.middleware', () => ({
     authenticate: (req: any, res: any, next: any) => {
-        req.userId = 1;
+        req.userId = testUser.id ?? 1;
         next();
     },
 }));
@@ -12,7 +12,7 @@ import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 import app from '../../app';
 import { prisma } from '../../utils/prisma';
-import { setupTestDB, disconnectTestDB } from '../setup.test.db';
+import { setupTestDB, disconnectTestDB, testUser } from '../setup.test.db';
 
 beforeAll(async () => {
     await setupTestDB();

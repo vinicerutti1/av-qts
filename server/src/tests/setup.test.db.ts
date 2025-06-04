@@ -10,9 +10,10 @@ export const setupTestDB = async () => {
     await prisma.$executeRawUnsafe('DELETE FROM sqlite_sequence WHERE name = "User";');
     await prisma.$executeRawUnsafe('DELETE FROM sqlite_sequence WHERE name = "Task";');
 
+    const uniqueEmail = `usuario_${Date.now()}@exemplo.teste`;
     const user = await prisma.user.create({
         data: {
-            email: 'usuario@exemplo.teste',
+            email: uniqueEmail,
             name: 'Usuário Exemplo',
             password: 'senha',
         },
