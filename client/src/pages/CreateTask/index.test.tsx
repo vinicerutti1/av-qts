@@ -46,32 +46,4 @@ describe('CreateTask (Componente)', () => {
             'fake-token',
         );
     });
-
-    it('deve mostrar erro quando o título não é preenchido', async () => {
-        // implementar
-    });
-
-    it('deve navegar para /tasks após criação bem-sucedida', async () => {
-        // implementar
-    });
-
-    it('deve mostrar mensagem de erro quando a API falha', async () => {
-        // implementar
-    });
-
-    it('deve enviar "medium" como prioridade padrão', async () => {
-        // implementar
-    });
-
-    it('deve permitir criação sem data de vencimento', async () => {
-        // implementar
-    });
-
-    it('deve mostrar erro quando não há token de autenticação', async () => {
-        // implementar
-    });
-
-    it('deve mostrar ícone correspondente à prioridade selecionada', async () => {
-        // implementar
-    });
 });

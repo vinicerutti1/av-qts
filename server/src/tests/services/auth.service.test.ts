@@ -60,10 +60,6 @@ describe('AuthService', () => {
                 name: mockUser.name,
             });
         });
-
-        it('deve lançar erro ao cadastar um usuário já cadastrado', async () => {
-            // implementar
-        });
     });
 
     describe('loginUser', () => {
@@ -83,14 +79,6 @@ describe('AuthService', () => {
                 email: mockUser.email,
                 name: mockUser.name,
             });
-        });
-
-        it('deve lançar erro ao realizar login de um usuário não encontrado', async () => {
-            // implementar
-        });
-
-        it('deve lançar erro ao realizar login com a senha incorreta', async () => {
-            // implementar
         });
     });
 
@@ -114,10 +102,6 @@ describe('AuthService', () => {
                 createdAt: mockUser.createdAt,
             });
         });
-
-        it('deve lançar erro ao buscar usuário pelo identificador se o usuário não existir', async () => {
-            // implementar
-        });
     });
 
     describe('getUserFromTokenPayload', () => {
@@ -136,10 +120,6 @@ describe('AuthService', () => {
                 createdAt: mockUser.createdAt,
             });
         });
-
-        it('deve lançar erro ao buscar usuário pelo token se o usuário não existir', async () => {
-            // implementar
-        });
     });
 
     describe('refreshToken', () => {
@@ -153,10 +133,6 @@ describe('AuthService', () => {
 
             // Assert (verificar)
             expect(newToken).toBe('tokenNovo');
-        });
-
-        it('deve lançar erro ao atualizar token se o token antigo for inválido', () => {
-            // implementar
         });
     });
 });
